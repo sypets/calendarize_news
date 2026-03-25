@@ -20,9 +20,21 @@ class NewsLinkViewHelperTest extends FunctionalTestCase
         'typo3conf/ext/calendarize_news',
     ];
 
+    protected ServerRequest $request;
+
+    public function setUp(): void
+    {
+        // since v13 it is necessary to initialize the ConfigurationManager with a request if using StandaloneView
+        $request = new ServerRequest();
+        $configurationManager = GeneralUtility::makeInstance(ConfigurationManager::class);
+        $configurationManager->setRequest($request);
+        $this->request = $request;
+    }
+
     public function testViewHelperRender(): void
     {
         $view = new StandaloneView();
+        $view->setRequest($this->request);
         $template = '{namespace n=GeorgRinger\News\ViewHelpers}' .
             '<n:link newsItem="{news}">MyLink</n:link>';
 
@@ -35,6 +47,7 @@ class NewsLinkViewHelperTest extends FunctionalTestCase
     public function testXclassLoadedAndIndexArgumentIsAccepted(): void
     {
         $view = new StandaloneView();
+        $view->setRequest($this->request);
         $template = '{namespace n=GeorgRinger\News\ViewHelpers}' .
             '<n:link newsItem="{news}" index="{index}">MyLink</n:link>';
 
@@ -48,6 +61,7 @@ class NewsLinkViewHelperTest extends FunctionalTestCase
     public function testIndexId(): void
     {
         $view = new StandaloneView();
+        $view->setRequest($this->request);
         $template = '{namespace n=GeorgRinger\News\ViewHelpers}' .
             '<n:link newsItem="{news}" index="{index}">MyLink</n:link>';
 
